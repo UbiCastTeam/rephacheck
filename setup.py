@@ -25,9 +25,12 @@ def find_version(*file_paths):
     raise RuntimeError("Unable to find version string.")
 
 
+version = find_version("src", "rephacheck", "__init__.py")
+url = 'https://gitlab.com/NicolasKAROLAK/rephacheck'
+
 setup(
     name='rephacheck',
-    version=find_version("src", "rephacheck", "__init__.py"),
+    version=version,
     description='Health check for PostgreSQL cluster managed by repmgr',
     long_description=read('README.rst'),
     classifiers=[
@@ -49,7 +52,8 @@ setup(
     keywords='haproxy healthcheck postgresql repmgr',
     author='Nicolas KAROLAK',
     author_email='nicolas@karolak.fr',
-    url='https://gitlab.com/NicolasKAROLAK/rephacheck',
+    url=url,
+    download_url='{}/repository/v{}/archive.tar.gz'.format(url, version),
     license='Public Domain',
     package_dir={"": "src"},
     packages=find_packages('src'),
