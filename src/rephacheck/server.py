@@ -1,32 +1,28 @@
 #!/usr/bin/env python
+# -*- encoding: utf-8 -*-
+
+"""
+Determine by voting which is the state of each node.
+For this to work properly, you need to have an odd number of nodes.
+"""
 
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 from builtins import *
 
+from collections import Counter
 import http.server
+from io import open
+import json
 import psycopg2
 
-PORT = 8000
-NODES = {
-    'pg1': {
-        'addr': '10.64.249.79',
-        'node_id': 1,
-    },
-    'pg2': {
-        'addr': '10.64.249.188',
-        'node_id': 2,
-    },
-    'pg3': {
-        'addr': '10.64.249.155',
-        'node_id': 3,
-    },
-}
-CONN = {
-    'dbname': 'repmgr',
-    'user': 'repmgr',
-    'password': 'changeme',
-}
+with open('/etc/rephacheck.json') as rephaconf:
+    conf = json.load(rephaconf)
+
+PORT = conf['port']
+NODES = conf['nodes']
+CONN = conf['conninfo']
+CURRENT = conf['local_node_id']
 
 
 class Server(http.server.HTTPServer):
@@ -35,7 +31,7 @@ class Server(http.server.HTTPServer):
 
 class Handler(http.server.SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
-        self.s = get_quorum_state(**NODES['pg1'])
+        self.s = get_quorum_state(CURRENT)
         http.server.SimpleHTTPRequestHandler.__init__(self, *args, **kwargs)
 
     def _set_headers(self):
@@ -45,8 +41,8 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
     def do_GET(self):
         self._set_headers()
-        self.wfile.write(self.s)
-        self.wfile.write('\n')
+        self.wfile.write(self.s.encode('utf-8'))
+        self.wfile.write('\n'.encode('utf-8'))
 
     def do_HEAD(self):
         self._set_headers()
@@ -61,25 +57,27 @@ def get_state(addr, node_id):
         cur.execute(query.format(node_id))
         data = cur.fetchone()
         cur.close()
-        # determine if is an active primary
-        is_primary = True if data == (True, 'primary') else False
         # return result
-        return is_primary
+        return data
     except Exception:
         # an error occured, so return false by default
-        return False
+        return (False, 'unknown')
 
 
-def get_quorum_state(addr, node_id):
+def get_quorum_state(node_id):
     # init vars
-    vote = 0
-    state = 'standby'
-    # ask each node for its state
+    votes = []
+    # ask each node for the state of `node_id`
     for node in NODES.values():
-        vote += 1 if get_state(node['addr'], node_id) else 0
+        active, role = get_state(node['addr'], node_id)
+        # if node considered active take vote, otherwise fence it
+        if active:
+            votes.append(role)
+        else:
+            votes.append('fenced')
     # determines voting result
-    if vote > len(NODES) / 2:
-        state = 'primary'
+    results = Counter(votes)
+    state = results.most_common(1)[0][0]
     # return result
     return state
 
