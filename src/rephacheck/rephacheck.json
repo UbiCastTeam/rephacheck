@@ -1,4 +1,5 @@
 {
+  "listen": "localhost",
   "port": 8000,
   "local_node_id": 1,
   "nodes": {

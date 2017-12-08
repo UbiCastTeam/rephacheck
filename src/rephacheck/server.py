@@ -19,6 +19,7 @@ import psycopg2
 with open('/etc/rephacheck.json') as rephaconf:
     conf = json.load(rephaconf)
 
+LISTEN = conf['listen']
 PORT = conf['port']
 NODES = conf['nodes']
 CONN = conf['conninfo']
@@ -48,10 +49,10 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         self._set_headers()
 
 
-def get_state(addr, node_id):
+def get_state(addr, port, node_id):
     try:
         # postgresql query
-        con = psycopg2.connect(host=addr, **CONN)
+        con = psycopg2.connect(host=addr, port=port, **CONN)
         cur = con.cursor()
         query = 'SELECT active, type FROM repmgr.nodes WHERE node_id = {};'
         cur.execute(query.format(node_id))
@@ -69,7 +70,7 @@ def get_quorum_state(node_id):
     votes = []
     # ask each node for the state of `node_id`
     for node in NODES.values():
-        active, role = get_state(node['addr'], node_id)
+        active, role = get_state(node['addr'], node['port'], node_id)
         # if node considered active take vote, otherwise fence it
         if active:
             votes.append(role)
@@ -84,7 +85,7 @@ def get_quorum_state(node_id):
 
 def run():
     # run http server
-    httpd = Server(('localhost', PORT), Handler)
+    httpd = Server((LISTEN, PORT), Handler)
     print('serving at port', PORT)
     httpd.serve_forever()
 
