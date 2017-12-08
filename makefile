@@ -1,6 +1,10 @@
-.PHONY: all sdist wheel push clean
+.PHONY: all build sdist wheel push clean
 
-all:
+all: build
+
+build:
+	@make sdist
+	@make wheel
 
 sdist:
 	@python setup.py sdist
