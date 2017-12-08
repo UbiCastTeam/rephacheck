@@ -15,6 +15,7 @@ import http.server
 from io import open
 import json
 import psycopg2
+from socket import AF_INET6
 
 with open('/etc/rephacheck.json') as rephaconf:
     conf = json.load(rephaconf)
@@ -27,7 +28,7 @@ CURRENT = conf['local_node_id']
 
 
 class Server(http.server.HTTPServer):
-    pass
+    address_family = AF_INET6
 
 
 class Handler(http.server.SimpleHTTPRequestHandler):

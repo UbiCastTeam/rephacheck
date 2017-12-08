@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v0.3.0
+
+* add ipv6 compatibility
+
 ## v0.2.0
 
 * allow to configure listening address
