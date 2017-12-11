@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v0.3.1
+
+* set MIME type to text/plain
+
 ## v0.3.0
 
 * add ipv6 compatibility

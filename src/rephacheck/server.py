@@ -38,7 +38,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
     def _set_headers(self):
         self.send_response(200)
-        self.send_header('Content-Type', 'application/json')
+        self.send_header('Content-Type', 'text/plain')
         self.end_headers()
 
     def do_GET(self):
