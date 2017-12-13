@@ -53,7 +53,7 @@ setup(
     author='Nicolas KAROLAK @ UbiCast',
     author_email='nicolas@karolak.fr',
     url=url,
-    download_url='{}/repository/v{}/archive.tar.gz'.format(url, version),
+    download_url='{}/archive/v{}.tar.gz'.format(url, version),
     license='LGPLv3',
     package_dir={"": "src"},
     packages=find_packages('src'),
