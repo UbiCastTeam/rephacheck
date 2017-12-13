@@ -26,7 +26,7 @@ def find_version(*file_paths):
 
 
 version = find_version("src", "rephacheck", "__init__.py")
-url = 'https://gitlab.com/NicolasKAROLAK/rephacheck'
+url = 'https://github.com/UbiCastTeam/rephacheck'
 
 setup(
     name='rephacheck',
@@ -36,7 +36,7 @@ setup(
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: System Administrators',
-        'License :: Public Domain',
+        'License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)',
         'Natural Language :: English',
         'Operating System :: POSIX :: Linux',
         'Operating System :: Unix',
@@ -50,11 +50,11 @@ setup(
         'Topic :: Internet :: WWW/HTTP :: HTTP Servers',
     ],
     keywords='haproxy healthcheck postgresql repmgr',
-    author='Nicolas KAROLAK',
+    author='Nicolas KAROLAK @ UbiCast',
     author_email='nicolas@karolak.fr',
     url=url,
     download_url='{}/repository/v{}/archive.tar.gz'.format(url, version),
-    license='Public Domain',
+    license='LGPLv3',
     package_dir={"": "src"},
     packages=find_packages('src'),
     package_data={
