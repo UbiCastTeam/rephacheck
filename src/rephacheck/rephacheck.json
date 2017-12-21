@@ -24,5 +24,6 @@
     "user": "repmgr",
     "password": "changeme"
   },
-  "timeout": 5
+  "timeout": 5,
+  "log_file": "/var/log/rephacheck.log"
 }

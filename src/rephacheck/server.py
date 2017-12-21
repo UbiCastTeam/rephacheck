@@ -14,6 +14,8 @@ from collections import Counter
 import http.server
 from io import open
 import json
+import logging
+import logging.handlers
 import psycopg2
 from socket import AF_INET6
 
@@ -23,9 +25,17 @@ with open('/etc/rephacheck.json') as rephaconf:
 LISTEN = conf.get('listen', 'localhost')
 PORT = conf.get('port', 8000)
 NODES = conf.get('nodes')
-CONN = conf.get('conninfo')
+CONNINFO = conf.get('conninfo')
 TIMEOUT = conf.get('timeout', 5)
 CURRENT = conf.get('local_node_id')
+LOG_FILE = conf.get('log_file', '/var/log/rephacheck.log')
+
+logger = logging.getLogger('rephacheck')
+logger.setLevel(logging.INFO)
+file_handler = logging.handlers.RotatingFileHandler(
+    LOG_FILE, maxBytes=102400, backupCount=7
+)
+logger.addHandler(file_handler)
 
 
 class Server(http.server.HTTPServer):
@@ -46,6 +56,8 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         self._set_headers()
         self.wfile.write(self.s.encode('utf-8'))
         self.wfile.write('\n'.encode('utf-8'))
+        logger.info('client: {} - state: {}'.format(self.client_address[0],
+                                                    self.s))
 
     def do_HEAD(self):
         self._set_headers()
@@ -54,7 +66,8 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 def get_state(addr, port, node_id):
     try:
         # postgresql query
-        con = psycopg2.connect(host=addr, port=port, connect_timeout=TIMEOUT, **CONN)
+        con_args = {'host': addr, 'port': port, 'connect_timeout': TIMEOUT}
+        con = psycopg2.connect(**con_args, **CONNINFO)
         cur = con.cursor()
         query = 'SELECT active, type FROM repmgr.nodes WHERE node_id = {};'
         cur.execute(query.format(node_id))
