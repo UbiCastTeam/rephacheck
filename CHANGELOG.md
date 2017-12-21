@@ -1,5 +1,7 @@
 # CHANGELOG
 
+* make psycopg2 timeout configurable
+
 ## v0.3.1
 
 * set MIME type to text/plain

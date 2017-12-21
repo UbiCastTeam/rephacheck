@@ -23,5 +23,6 @@
     "dbname": "repmgr",
     "user": "repmgr",
     "password": "changeme"
-  }
+  },
+  "timeout": 5
 }

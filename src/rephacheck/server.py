@@ -20,11 +20,12 @@ from socket import AF_INET6
 with open('/etc/rephacheck.json') as rephaconf:
     conf = json.load(rephaconf)
 
-LISTEN = conf['listen']
-PORT = conf['port']
-NODES = conf['nodes']
-CONN = conf['conninfo']
-CURRENT = conf['local_node_id']
+LISTEN = conf.get('listen', 'localhost')
+PORT = conf.get('port', 8000)
+NODES = conf.get('nodes')
+CONN = conf.get('conninfo')
+TIMEOUT = conf.get('timeout', 5)
+CURRENT = conf.get('local_node_id')
 
 
 class Server(http.server.HTTPServer):
@@ -53,7 +54,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 def get_state(addr, port, node_id):
     try:
         # postgresql query
-        con = psycopg2.connect(host=addr, port=port, **CONN)
+        con = psycopg2.connect(host=addr, port=port, connect_timeout=TIMEOUT, **CONN)
         cur = con.cursor()
         query = 'SELECT active, type FROM repmgr.nodes WHERE node_id = {};'
         cur.execute(query.format(node_id))
