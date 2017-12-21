@@ -1,6 +1,9 @@
 # CHANGELOG
 
+## v0.4.0
+
 * make psycopg2 timeout configurable
+* add basic logging
 
 ## v0.3.1
 
