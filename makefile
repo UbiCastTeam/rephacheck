@@ -7,10 +7,10 @@ build:
 	@make wheel
 
 sdist:
-	@python setup.py sdist
+	@python3 setup.py sdist
 
 wheel:
-	@python setup.py bdist_wheel
+	@python3 setup.py bdist_wheel
 
 push:
 	@twine upload dist/*
