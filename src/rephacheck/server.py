@@ -55,7 +55,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         sys.stderr.write("%s - %s\n" % (self.client_address[0], format % args))
 
     def log_request(self, code='-', size='-'):
-        self.log_message('"%s" %s %s %s',
+        self.log_message('"%s" %s %s - state: %s',
                          self.requestline, str(code), str(size), self.s)
 
 

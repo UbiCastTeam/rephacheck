@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v0.4.2
+
+* remove logging and let journalctl do its job
+
 ## v0.4.1
 
 * fix psql connect by merging dicts
