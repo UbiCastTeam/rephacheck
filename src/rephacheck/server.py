@@ -67,7 +67,8 @@ def get_state(addr, port, node_id):
     try:
         # postgresql query
         con_args = {'host': addr, 'port': port, 'connect_timeout': TIMEOUT}
-        con = psycopg2.connect(**con_args, **CONNINFO)
+        con_args.update(CONNINFO)
+        con = psycopg2.connect(**con_args)
         cur = con.cursor()
         query = 'SELECT active, type FROM repmgr.nodes WHERE node_id = {};'
         cur.execute(query.format(node_id))
