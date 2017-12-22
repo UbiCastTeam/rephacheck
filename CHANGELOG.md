@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v0.4.1
+
+* fix psql connect by merging dicts
+
 ## v0.4.0
 
 * make psycopg2 timeout configurable
