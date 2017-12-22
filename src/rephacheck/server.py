@@ -14,10 +14,9 @@ from collections import Counter
 import http.server
 from io import open
 import json
-import logging
-import logging.handlers
 import psycopg2
 from socket import AF_INET6
+import sys
 
 with open('/etc/rephacheck.json') as rephaconf:
     conf = json.load(rephaconf)
@@ -28,14 +27,6 @@ NODES = conf.get('nodes')
 CONNINFO = conf.get('conninfo')
 TIMEOUT = conf.get('timeout', 5)
 CURRENT = conf.get('local_node_id')
-LOG_FILE = conf.get('log_file', '/var/log/rephacheck.log')
-
-logger = logging.getLogger('rephacheck')
-logger.setLevel(logging.INFO)
-file_handler = logging.handlers.RotatingFileHandler(
-    LOG_FILE, maxBytes=102400, backupCount=7
-)
-logger.addHandler(file_handler)
 
 
 class Server(http.server.HTTPServer):
@@ -56,11 +47,16 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         self._set_headers()
         self.wfile.write(self.s.encode('utf-8'))
         self.wfile.write('\n'.encode('utf-8'))
-        logger.info('client: {} - state: {}'.format(self.client_address[0],
-                                                    self.s))
 
     def do_HEAD(self):
         self._set_headers()
+
+    def log_message(self, format, *args):
+        sys.stderr.write("%s - %s\n" % (self.client_address[0], format % args))
+
+    def log_request(self, code='-', size='-'):
+        self.log_message('"%s" %s %s %s',
+                         self.requestline, str(code), str(size), self.s)
 
 
 def get_state(addr, port, node_id):
