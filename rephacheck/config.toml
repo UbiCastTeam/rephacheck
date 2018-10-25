@@ -1,0 +1,26 @@
+listen = ""
+port = 8543
+local_node_id = 1
+
+[nodes]
+
+  [nodes.node1]
+  addr = "10.64.249.79"
+  port = 5432
+  node_id = 1
+
+  [nodes.node2]
+  addr = "10.64.249.80"
+  port = 5432
+  node_id = 2
+
+  [nodes.node3]
+  addr = "10.64.249.81"
+  port = 5432
+  node_id = 3
+
+[conninfo]
+dbname = "repmgr"
+user = "repmgr"
+password = "changeme"
+connect_timeout = 5
