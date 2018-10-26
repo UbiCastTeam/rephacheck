@@ -37,6 +37,7 @@ pylint = "^2.1"
 flake8 = "^3.6"
 mypy = "^0.641.0"
 ipython = "^7.0"
+wheel = "^0.32.2"
 
 [tool.poetry.scripts]
 rephacheck = "rephacheck.query:main"
