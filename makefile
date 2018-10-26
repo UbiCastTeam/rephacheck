@@ -1,19 +1,15 @@
-.PHONY: all build sdist wheel push clean
+.PHONY: all install build publish clean
 
 all: build
 
+install:
+	poetry install
+
 build:
-	@make sdist
-	@make wheel
+	poetry build
 
-sdist:
-	@python3 setup.py sdist
-
-wheel:
-	@python3 setup.py bdist_wheel
-
-push:
-	@twine upload dist/*
+publish:
+	poetry publish
 
 clean:
-	@rm -rfv build/ dist/ src/*.egg-info src/rephacheck/*.pyc src/rephacheck/__pycache__
+	rm -rfv .venv/ dist/ *.egg-info rephacheck/*.pyc rephacheck/__pycache__
