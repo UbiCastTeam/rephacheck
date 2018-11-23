@@ -38,6 +38,7 @@ flake8 = "^3.6"
 mypy = "^0.641.0"
 ipython = "^7.0"
 wheel = "^0.32.2"
+pre-commit = "^1.12"
 
 [tool.poetry.scripts]
 rephacheck = "rephacheck.query:main"
